@@ -1,0 +1,8 @@
+**/node_modules/
+**/.git/
+**/.idea/
+**/.vscode/
+**/target/classes/
+**/target/generated-sources/
+**/target/maven-status/
+**/target/test-classes/
