@@ -96,7 +96,7 @@ button, input, select, textarea {
   color: #ffffff;
   border-bottom: 3px solid #f5c03b;
   padding: 0.65rem 0;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
@@ -233,34 +233,68 @@ button, input, select, textarea {
   color: white;
 }
 
-/* Hero Section */
+/* Hero Section & Edge-to-Edge Banner Slider */
 .hero-section {
   text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 2rem 1rem;
+  margin-bottom: 2.25rem;
+  padding: 0;
 }
 
-.hero-title {
-  font-size: 3.2rem;
-  line-height: 1.15;
-  margin-bottom: 1rem;
-  color: #000000;
+.hero-banner-slider {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 295px;
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  border-top: none;
+  border-bottom: 4px solid var(--accent-primary);
 }
 
-.hero-gradient {
-  color: var(--accent-primary);
-  background: var(--bg-dark-header);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  padding: 0 0.2rem;
+.banner-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: marqueeBanner 24s linear infinite;
+  will-change: transform;
 }
 
-.hero-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  max-width: 800px;
-  margin: 0 auto 2rem auto;
-  line-height: 1.6;
+.hero-banner-slider:hover .banner-track {
+  animation-play-state: paused;
+}
+
+.banner-slide {
+  height: 100%;
+  width: 420px;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.banner-slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.banner-slide:hover img {
+  transform: scale(1.05);
+}
+
+@keyframes marqueeBanner {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-420px * 5));
+  }
 }
 
 /* Presets & Filter Bar */

@@ -21,19 +21,28 @@ export const ProteinExplorer = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [maxCostGrams, setMaxCostGrams] = useState(5.0);
 
-  const fetchProteins = useCallback(async (params = {}) => {
+  const fetchProteins = useCallback(async (params = {}, retries = 3, delay = 2000) => {
     setLoading(true);
     setError(null);
-    try {
-      const data = await proteinService.getProteins(params);
-      setProteins(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch proteins from backend:', err);
-      setError(err.message || 'Could not fetch protein data from external API.');
-      setProteins([]);
-    } finally {
-      setLoading(false);
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const data = await proteinService.getProteins(params);
+        setProteins(Array.isArray(data) ? data : []);
+        setError(null);
+        setLoading(false);
+        return;
+      } catch (err) {
+        console.warn(`Fetch proteins attempt ${attempt}/${retries} failed:`, err.message);
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        } else {
+          console.error('Failed to fetch proteins after retries:', err);
+          setError(err.message || 'Could not fetch protein data from external API.');
+          setProteins([]);
+        }
+      }
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -109,14 +118,34 @@ export const ProteinExplorer = ({
   return (
     <div>
       <section className="hero-section">
-        <h1 className="hero-title">
-          Protein <span className="hero-gradient">Nutritional Intelligence</span>
-        </h1>
-        <p className="hero-subtitle">
-          Query protein costs, package pricing, protein density, and dietary compatibility (Vegetarian & Vegan).
-        </p>
+        {/* Edge-to-edge seamless sliding food image banner */}
+        <div className="hero-banner-slider">
+          <div className="banner-track">
+            {[
+              '/banner/chicken.jpg',
+              '/banner/milk.png',
+              '/banner/eggs.png',
+              '/banner/tofu.png',
+              '/banner/tuna.jpg',
+              '/banner/chicken.jpg',
+              '/banner/milk.png',
+              '/banner/eggs.png',
+              '/banner/tofu.png',
+              '/banner/tuna.jpg',
+              '/banner/chicken.jpg',
+              '/banner/milk.png',
+              '/banner/eggs.png',
+              '/banner/tofu.png',
+              '/banner/tuna.jpg'
+            ].map((imgUrl, idx) => (
+              <div key={idx} className="banner-slide">
+                <img src={imgUrl} alt={`Protein Item ${idx + 1}`} />
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <div className="presets-bar">
+        <div className="presets-bar" style={{ marginTop: '1.75rem' }}>
           <button
             className={`preset-chip ${dietFilter === 'veg' && maxCostGrams === 1.50 ? 'active' : ''}`}
             onClick={() => handlePresetSelect('veg-under-1-50')}
